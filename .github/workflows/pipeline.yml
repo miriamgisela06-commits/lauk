@@ -34,7 +34,7 @@ jobs:
   
   lighthouse:
     needs: test
-    uses: ./.github/workflows/LightHouse.yml
+    uses: ./.github/workflows/Lighthouse.yml
     with:
       input_artifact: "site-minified"
       output_artifact: "site-ready"
