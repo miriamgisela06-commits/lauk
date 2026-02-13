@@ -1,4 +1,4 @@
-name: Orquestador (minify -> lighthouse -> deploy)
+name: Orquestador (minify -> Lighthouse -> deploy)
 
 on:
   push:
@@ -21,10 +21,20 @@ jobs:
       js_path: "script.js"
       css_path: "style.css"
       artifact_name: "site-minified"
-
-  lighthouse:
+      
+  test:
     needs: minify
-    uses: ./.github/workflows/Lighthouse.yml
+    uses: ./.github/workflows/test.yml
+    with:
+      input_artifact: site-minified
+
+  lint:
+    needs: minify
+    uses: ./.github/workflows/lint_and_format.yml
+  
+  lighthouse:
+    needs: test
+    uses: ./.github/workflows/LightHouse.yml
     with:
       input_artifact: "site-minified"
       output_artifact: "site-ready"
@@ -38,7 +48,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Descargar sitio listo (incluye /report/)
+      - name: Descargar sitio listo
         uses: actions/download-artifact@v4
         with:
           name: "site-ready"
